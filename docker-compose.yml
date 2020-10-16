@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  syslog:
+    image: voxxit/rsyslog
+    volumes:
+      - ../syslog/:/var/log/
+    entrypoint: bash -c "rm -f /var/run/rsyslogd.pid && rsyslogd -n"
+    ports:
+        - "127.0.0.1:5516:514/udp"
+
+  cache:
+    image: redis:6.0.5
+    command: "redis-server --port 6380 --appendonly yes"
+    volumes:
+      - ../cache-data:/data
+    ports:
+      - "6380:6380"
+    links:
+      - syslog
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://127.0.0.1:5515"
+        tag: "cache"
