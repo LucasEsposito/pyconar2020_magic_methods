@@ -1,0 +1,31 @@
+version: '3'
+
+networks:
+    default_network:
+      #external: true
+
+services:
+  syslog:
+    container_name: pycon_syslog_1
+    image: voxxit/rsyslog
+    volumes:
+      - ../../syslog/:/var/log/
+    entrypoint: bash -c "rm -f /var/run/rsyslogd.pid && rsyslogd -n"
+    ports:
+        - "127.0.0.1:5514:514/udp"
+
+  pycon_api:
+    container_name: pycon_api_1
+    build: .
+    command: bash -c "echo Starting PYCON API...Check 127.0.0.1:8080 && python -u /myapp/src/api.py -H $$HOSTNAME"
+    volumes:
+      - ./:/myapp/
+    ports:
+      - "8080:8080"
+    networks:
+      - default_network
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://127.0.0.1:5514"
+        tag: "pycon_api"

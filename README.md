@@ -1,2 +1,2 @@
-# magic_methods_cache
-Proof of concept of a cache system using Python magic methods.
+# PyConAr2020 - Python Magicc_Methods
+Examples used during Python Magic Methods presentation

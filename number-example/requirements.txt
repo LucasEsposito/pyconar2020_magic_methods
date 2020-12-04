@@ -1,0 +1,4 @@
+bottle
+logging
+gevent==1.2.2
+requests
